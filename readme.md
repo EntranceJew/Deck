@@ -3,7 +3,7 @@ This is a library written for LOVE to provide a playlist interface for a sequenc
 
 # Public API Functions
 ## deck:init()
-Initialize Deck or use it as shorthand to wipe its state. If used to wipe its state, it may not stop the current video from playing, for that use `deck:destroyCurrentVideo()` before calling `deck:init()`.
+Initialize Deck or use it as shorthand to wipe its state. If used to wipe its state, it may not stop the current video from playing, for that use `deck:stop()` or `deck:destroyCurrentItem()` before calling `deck:init()`.
 
 ## deck:update(dt)
 Check if the current item is still playing, whether it should advance tracks or just stop.
@@ -17,7 +17,7 @@ Get whatever is "active", be it a video or a source.
 Add a file or Object to the playlist.
 
 ## deck:insertDirectory(folderpath, index*)
-* **item** `string` a directory to scan for files and insert.
+* **folderpath** `string` a directory to scan for files and insert.
 * **index** `int` where to insert the items, leave nil to just put it on the end.
 Add an entire directory to the playlist. Does not recurse. Uses `deck:insertItem()` internally. 
 Since getDirectoryItems has no predictable order, it will insert the items in the reverse order they were found if an index is specified; otherwise it will add them in their found order to the end of the playlist.
@@ -47,6 +47,7 @@ Stop the entire playlist. Moves the playlist index back to the beginning. Unload
 You shouldn't need these, but if you do, I won't blame you.
 
 ## deck:loadItem(index)
+* **index** `int` which item in the playlist to load.
 Load an item from the playlist at the specified index. If there is an active playlist item, it is unloaded. Returns false if the provided index is nil.
 If the playlist item at the specified index is a string, it will attempt to create a Source from it. If that Source is created, it will then attempt to create a Video from it. If the Video is created, it assigns the Source to the Video to safely create a video from a file that could potentially be a video or and/or source.
 It does all this because pcalling `love.graphics.newVideo` with or without the loadaudio flag may cause a crash if passed an mp3 or something it wasn't expecting AND because newSource will extract the audio portion of a video.
